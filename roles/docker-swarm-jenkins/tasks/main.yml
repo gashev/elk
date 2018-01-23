@@ -1,0 +1,40 @@
+---
+- name: create /opt/dockers/jenkins folder
+  file: 
+    path: /opt/dockers/jenkins
+    state: directory
+    mode: 0755
+
+- name: Create jenkins Dockerfile
+  template: src=Dockerfile dest=/opt/dockers/jenkins/
+
+- name: Create jenkins security.groovy file
+  template: src=security.groovy dest=/opt/dockers/jenkins/
+
+- name: get docker images
+  command: docker images
+  register: docker_images_jenkins
+
+- name: create my-jenkins image
+  command: docker build . -t myjenkins
+  args:
+    chdir: /opt/dockers/jenkins
+  when: "'myjenkins' not in docker_images_jenkins.stdout"
+
+- name: create /opt/jenkins folder
+  file:
+    path: /opt/jenkins
+    state: directory
+    mode: 0755
+    owner: 1000
+    group: 1000
+    setype: svirt_sandbox_file_t
+
+- name: call docker service ls jenkins
+  command: docker service ls
+  register: docker_service_ls_jenkins
+
+- name: exec jenkins
+  command: docker service create --name jenkins --mount type=bind,source=/opt/jenkins,destination=/var/jenkins_home -p 8080:8080 myjenkins:latest
+  when: "'jenkins' not in docker_service_ls_jenkins.stdout"
+
