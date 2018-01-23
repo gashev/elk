@@ -1,0 +1,8 @@
+---
+- name: call docker info
+  command: docker info
+  register: docker_info
+
+- name: configure docker swarm
+  command: docker swarm init
+  when: "'Swarm: inactive' in docker_info.stdout"
