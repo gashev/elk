@@ -1,0 +1,18 @@
+---
+- name: create /var/log/nginx folder
+  file:
+    path: /var/log/nginx
+    state: directory
+    mode: 0755
+    setype: svirt_sandbox_file_t
+
+- name: call docker service ls
+  command: docker service ls
+  register: docker_service_ls_nginx
+
+
+- name: exec nginx
+  command: docker service create --name nginx --mount type=bind,source=/var/log/nginx,destination=/var/log/nginx -p 80:80  nginx:alpine
+  when: "'nginx' not in docker_service_ls_nginx.stdout"
+
+
