@@ -1,0 +1,5 @@
+---
+- name: Create sysctl.conf file
+  template: src=sysctl.conf dest=/etc
+  notify: sysctl read values from file
+

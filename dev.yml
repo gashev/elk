@@ -4,6 +4,7 @@
   remote_user: root
 
   roles:
+    - sysctl
     - docker
     - docker-swarm
     - docker-swarm-nginx
@@ -11,3 +12,4 @@
     - jenkins-job-builder
     - docker-swarm-filebeat
     - docker-swarm-logstash
+    - docker-swarm-elasticsearch
