@@ -9,3 +9,4 @@
     - docker-swarm-nginx
     - docker-swarm-jenkins
     - jenkins-job-builder
+    - docker-swarm-filebeat

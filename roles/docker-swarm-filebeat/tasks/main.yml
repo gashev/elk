@@ -1,0 +1,11 @@
+---
+- name: Create /opt/filebeat.yml file
+  template: src=filebeat.yml dest=/opt
+
+- name: call docker service ls filebeat
+  command: docker service ls
+  register: docker_service_ls_filebeat
+
+- name: exec filebeat
+  command: docker service create --name filebeat --mount type=bind,source=/var/log/nginx,destination=/var/log/nginx --mount type=bind,source=/opt/filebeat.yml,destination=/usr/share/filebeat/filebeat.yml docker.elastic.co/beats/filebeat:6.1.2
+  when: "'filebeat' not in docker_service_ls_filebeat.stdout"

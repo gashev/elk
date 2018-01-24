@@ -1,0 +1,10 @@
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - /var/log/nginx/*.log
+  exclude_files: ['\.gz$']
+
+output.logstash:
+{% for ip in hostvars %}
+  hosts: ["{{ ip }}:5400"]
+{% endfor %}
