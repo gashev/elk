@@ -1,0 +1,17 @@
+- job:
+    name: nginx
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 5
+      artifactDaysToKeep: -1
+      artifactNumToKeep: -1
+
+    builders:
+      - shell: |
+          #!/bin/bash -x
+          {% for ip in hostvars %}
+          curl http://{{ ip }}
+          {% endfor %}
+
+    triggers:
+      - timed: '* * * * *'

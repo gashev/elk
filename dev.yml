@@ -8,3 +8,4 @@
     - docker-swarm
     - docker-swarm-nginx
     - docker-swarm-jenkins
+    - jenkins-job-builder

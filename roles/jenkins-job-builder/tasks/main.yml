@@ -1,0 +1,35 @@
+- name: Install epel-release packages
+  yum: name={{ item }} state=present
+  with_items:
+   - epel-release
+
+- name: Install python-pip package
+  yum: name={{ item }} state=present
+  with_items:
+   - python-pip
+
+- name: call pip list
+  command: pip list
+  register: pip_list
+
+- name: install jenkins-job-builder
+  command: pip install jenkins-job-builder
+  when: "'jenkins-job-builder' not in pip_list.stdout"
+
+- name: create /etc/jenkins_jobs folder
+  file:
+    path: /etc/jenkins_jobs
+    state: directory
+    mode: 0755
+ 
+- name: Create /etc/jenkins_jobs/jenkins_jobs.ini file
+  template: src=jenkins_jobs.ini dest=/etc/jenkins_jobs
+
+- name: Create /opt/nginx.yaml file
+  template: src=nginx.yaml dest=/opt/nginx.yaml
+
+- name: call jenkins-jobs update /opt/nginx.yaml
+  command: jenkins-jobs update /opt/nginx.yaml
+  register: jenkins_jobs_update_nginx
+
+
