@@ -10,3 +10,4 @@
     - docker-swarm-jenkins
     - jenkins-job-builder
     - docker-swarm-filebeat
+    - docker-swarm-logstash

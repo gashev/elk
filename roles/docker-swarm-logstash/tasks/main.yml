@@ -1,0 +1,38 @@
+---
+- name: Create /opt/logstash.yml file
+  template: src=logstash.yml dest=/opt
+
+- name: Create /opt/logstash-nginx-es.conf file
+  template: src=logstash-nginx-es.conf dest=/opt
+
+- name: create /var/log/logstash folder
+  file:
+    path: /var/log/logstash
+    state: directory
+    mode: 0777
+    setype: svirt_sandbox_file_t
+
+- name: create /var/lib/logstash folder
+  file:
+    path: /var/lib/logstash
+    state: directory
+    mode: 0755
+    owner: 1000
+    group: 1000
+    setype: svirt_sandbox_file_t
+
+- name: create /etc/logstash/conf.d folder
+  file:
+    path: /etc/logstash/conf.d
+    state: directory
+    mode: 0755
+    setype: svirt_sandbox_file_t
+
+
+- name: call docker service ls logstash
+  command: docker service ls
+  register: docker_service_ls_logstash
+
+- name: exec logstash
+  command: docker service create --name logstash --mount type=bind,source=/opt/logstash.yml,destination=/usr/share/logstash/config/logstash.yml --mount type=bind,source=/opt/logstash-nginx-es.conf,destination=/etc/logstash/conf.d/logstash-nginx-es.conf --mount type=bind,source=/var/log/logstash,destination=/var/log/logstash  --mount type=bind,source=/var/lib/logstash,destination=/var/lib/logstash -p 5400:5400 docker.elastic.co/logstash/logstash:6.1.2
+  when: "'logstash' not in docker_service_ls_logstash.stdout"
