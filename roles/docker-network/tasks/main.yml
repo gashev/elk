@@ -1,0 +1,9 @@
+---
+- name: call docker network ls
+  command: docker network ls
+  register: docker_network_ls
+
+- name: create elk_overlay_network
+  command: docker network create -d overlay elk_overlay_network
+  when: "'elk_overlay_network' not in docker_network_ls.stdout"
+

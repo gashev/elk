@@ -7,6 +7,7 @@
     - sysctl
     - docker
     - docker-swarm
+    - docker-network
     - docker-swarm-nginx
     - docker-swarm-jenkins
     - jenkins-job-builder
