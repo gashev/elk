@@ -34,5 +34,5 @@
   register: docker_service_ls_logstash
 
 - name: exec logstash
-  command: docker service create --name logstash --mount type=bind,source=/opt/logstash.yml,destination=/usr/share/logstash/config/logstash.yml --mount type=bind,source=/opt/logstash-nginx-es.conf,destination=/etc/logstash/conf.d/logstash-nginx-es.conf --mount type=bind,source=/var/log/logstash,destination=/var/log/logstash  --mount type=bind,source=/var/lib/logstash,destination=/var/lib/logstash -p 5400:5400 docker.elastic.co/logstash/logstash:6.1.2
+  command: docker service create --name logstash --mount type=bind,source=/opt/logstash.yml,destination=/usr/share/logstash/config/logstash.yml --mount type=bind,source=/opt/logstash-nginx-es.conf,destination=/etc/logstash/conf.d/logstash-nginx-es.conf --mount type=bind,source=/var/log/logstash,destination=/var/log/logstash  --mount type=bind,source=/var/lib/logstash,destination=/var/lib/logstash -p 5400:5400 --network elk_overlay_network docker.elastic.co/logstash/logstash:6.1.2
   when: "'logstash' not in docker_service_ls_logstash.stdout"

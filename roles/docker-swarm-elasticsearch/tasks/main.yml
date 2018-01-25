@@ -5,12 +5,20 @@
     mode: 0777
     setype: svirt_sandbox_file_t
 
-- name: call docker service ls elasticsearch-master
+- name: call docker service ls elasticsearch
   command: docker service ls
-  register: docker_service_ls_elasticsearch_master
+  register: docker_service_ls_elasticsearch
 
 - name: exec elasticsearch-master
-  command: docker service create --name elasticsearch-master -p 9200:9200 -p 9300:9300 --env cluster.name=docker-cluster --env node.master=true --env node.data=false docker.elastic.co/elasticsearch/elasticsearch:6.1.2
-  when: "'elasticsearch-master' not in docker_service_ls_elasticsearch_master.stdout"
+  command: docker service create --name elasticsearch-master --hostname elasticsearch-master -p 9200:9200 -p 9300:9300 --env "discovery.zen.ping.unicast.hosts=elasticsearch-master,elasticsearch-data,elasticsearch-client" --env cluster.name=docker-cluster --env node.master=true --env node.data=false --network elk_overlay_network docker.elastic.co/elasticsearch/elasticsearch:6.1.2
+  when: "'elasticsearch-master' not in docker_service_ls_elasticsearch.stdout"
+
+- name: exec elasticsearch-data
+  command: docker service create --name elasticsearch-data --hostname elasticsearch-data --env "discovery.zen.ping.unicast.hosts=elasticsearch-master,elasticsearch-data,elasticsearch-client" --env cluster.name=docker-cluster --env node.master=false --env node.data=true --network elk_overlay_network --mount type=bind,source=/usr/share/elasticsearch/data,destination=/usr/share/elasticsearch/data  docker.elastic.co/elasticsearch/elasticsearch:6.1.2
+  when: "'elasticsearch-data' not in docker_service_ls_elasticsearch.stdout"
+
+- name: exec elasticsearch-client
+  command: docker service create --name elasticsearch-client --hostname elasticsearch-client --env "discovery.zen.ping.unicast.hosts=elasticsearch-master,elasticsearch-data,elasticsearch-client" --env cluster.name=docker-cluster --env node.master=false --env node.data=false --network elk_overlay_network  docker.elastic.co/elasticsearch/elasticsearch:6.1.2
+  when: "'elasticsearch-client' not in docker_service_ls_elasticsearch.stdout"
 
 

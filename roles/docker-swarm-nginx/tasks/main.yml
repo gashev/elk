@@ -12,7 +12,7 @@
 
 
 - name: exec nginx
-  command: docker service create --name nginx --mount type=bind,source=/var/log/nginx,destination=/var/log/nginx -p 80:80  nginx:alpine
+  command: docker service create --name nginx --mount type=bind,source=/var/log/nginx,destination=/var/log/nginx -p 80:80 nginx:alpine
   when: "'nginx' not in docker_service_ls_nginx.stdout"
 
 

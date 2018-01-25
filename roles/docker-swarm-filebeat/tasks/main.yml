@@ -7,5 +7,5 @@
   register: docker_service_ls_filebeat
 
 - name: exec filebeat
-  command: docker service create --name filebeat --mount type=bind,source=/var/log/nginx,destination=/var/log/nginx --mount type=bind,source=/opt/filebeat.yml,destination=/usr/share/filebeat/filebeat.yml docker.elastic.co/beats/filebeat:6.1.2
+  command: docker service create --name filebeat --mount type=bind,source=/var/log/nginx,destination=/var/log/nginx --mount type=bind,source=/opt/filebeat.yml,destination=/usr/share/filebeat/filebeat.yml --network elk_overlay_network docker.elastic.co/beats/filebeat:6.1.2
   when: "'filebeat' not in docker_service_ls_filebeat.stdout"
