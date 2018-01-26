@@ -14,3 +14,4 @@
     - docker-swarm-filebeat
     - docker-swarm-logstash
     - docker-swarm-elasticsearch
+    - docker-swarm-kibana
