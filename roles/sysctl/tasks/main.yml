@@ -3,3 +3,5 @@
   template: src=sysctl.conf dest=/etc
   notify: sysctl read values from file
 
+- name: call sysctl -p
+  command: sysctl -p
