@@ -35,6 +35,6 @@
   register: docker_service_ls_jenkins
 
 - name: exec jenkins
-  command: docker service create --name jenkins --mount type=bind,source=/opt/jenkins,destination=/var/jenkins_home -p 8080:8080 myjenkins:latest
+  command: docker service create --name jenkins --hostname jenkins --mount type=bind,source=/opt/jenkins,destination=/var/jenkins_home -p 8080:8080 myjenkins:latest
   when: "'jenkins' not in docker_service_ls_jenkins.stdout"
 
